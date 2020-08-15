@@ -32,7 +32,7 @@ class LudoDice extends StatefulWidget {
     this.dotColor,
 
     /// Curve for the animation. Default is [Curves.easeInOutSine]
-    this.curve = Curves.easeInOutBack,
+    this.curve = Curves.easeInOutQuart,
 
     /// Size of the dice to be rendered. Default is [300]
     this.size = 300,
@@ -44,6 +44,7 @@ class LudoDice extends StatefulWidget {
 class LudoDiceState extends State<LudoDice>
     with SingleTickerProviderStateMixin {
   AnimationController _animationController;
+  Animation _curvedAnimation;
 
   Vector3 _target, _currentRotation, _lastRotation, _stop;
 
@@ -62,12 +63,12 @@ class LudoDiceState extends State<LudoDice>
       duration: widget.duration,
     );
 
-    CurvedAnimation(
+    _curvedAnimation = CurvedAnimation(
       parent: _animationController,
       curve: widget.curve,
     )
       ..addListener(() {
-        double value = _animationController.value;
+        double value = _curvedAnimation.value;
         setState(() {
           _currentRotation = Vector3(
             lerpDoubleWithStops(
