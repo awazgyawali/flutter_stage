@@ -2,8 +2,17 @@ import 'package:flutter/material.dart';
 
 class DiceFace extends StatelessWidget {
   final int value;
+  final Color dotColor;
+  final BoxDecoration faceDecoration;
+  final double size;
 
-  const DiceFace({Key key, this.value = 1}) : super(key: key);
+  const DiceFace({
+    Key key,
+    this.value = 1,
+    this.dotColor,
+    this.faceDecoration,
+    this.size,
+  }) : super(key: key);
 
   _getFace() {
     switch (value) {
@@ -24,7 +33,7 @@ class DiceFace extends StatelessWidget {
   }
 
   _faceOne() {
-    return DiceDot();
+    return dot;
   }
 
   _faceTwo() {
@@ -34,7 +43,7 @@ class DiceFace extends StatelessWidget {
         Row(
           children: [
             Expanded(child: SizedBox()),
-            DiceDot(),
+            dot,
             Expanded(child: SizedBox(), flex: 3),
           ],
         ),
@@ -42,7 +51,7 @@ class DiceFace extends StatelessWidget {
         Row(
           children: [
             Expanded(child: SizedBox(), flex: 3),
-            DiceDot(),
+            dot,
             Expanded(child: SizedBox()),
           ],
         ),
@@ -59,7 +68,7 @@ class DiceFace extends StatelessWidget {
         Row(
           children: [
             Expanded(child: SizedBox()),
-            DiceDot(),
+            dot,
             Expanded(child: SizedBox(), flex: 3),
           ],
         ),
@@ -67,7 +76,7 @@ class DiceFace extends StatelessWidget {
         Row(
           children: [
             Expanded(child: SizedBox()),
-            DiceDot(),
+            dot,
             Expanded(child: SizedBox()),
           ],
         ),
@@ -75,7 +84,7 @@ class DiceFace extends StatelessWidget {
         Row(
           children: [
             Expanded(child: SizedBox(), flex: 3),
-            DiceDot(),
+            dot,
             Expanded(child: SizedBox()),
           ],
         ),
@@ -92,9 +101,9 @@ class DiceFace extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(child: SizedBox()),
-            DiceDot(),
+            dot,
             Expanded(child: SizedBox(), flex: 2),
-            DiceDot(),
+            dot,
             Expanded(child: SizedBox()),
           ],
         ),
@@ -102,9 +111,9 @@ class DiceFace extends StatelessWidget {
         Row(
           children: [
             Expanded(child: SizedBox()),
-            DiceDot(),
+            dot,
             Expanded(child: SizedBox(), flex: 2),
-            DiceDot(),
+            dot,
             Expanded(child: SizedBox()),
           ],
         ),
@@ -121,22 +130,22 @@ class DiceFace extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(child: SizedBox()),
-            DiceDot(),
+            dot,
             Expanded(child: SizedBox(), flex: 2),
-            DiceDot(),
+            dot,
             Expanded(child: SizedBox()),
           ],
         ),
         Expanded(child: SizedBox()),
-        DiceDot(),
+        dot,
         Expanded(child: SizedBox()),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(child: SizedBox()),
-            DiceDot(),
+            dot,
             Expanded(child: SizedBox(), flex: 2),
-            DiceDot(),
+            dot,
             Expanded(child: SizedBox()),
           ],
         ),
@@ -146,30 +155,30 @@ class DiceFace extends StatelessWidget {
   }
 
   _faceSix() {
-    return Column(
+    return Row(
       children: [
         Expanded(child: SizedBox()),
-        Row(
+        Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(child: SizedBox()),
-            DiceDot(),
+            dot,
             Expanded(child: SizedBox()),
-            DiceDot(),
+            dot,
             Expanded(child: SizedBox()),
-            DiceDot(),
+            dot,
             Expanded(child: SizedBox()),
           ],
         ),
         Expanded(child: SizedBox(), flex: 2),
-        Row(
+        Column(
           children: [
             Expanded(child: SizedBox()),
-            DiceDot(),
+            dot,
             Expanded(child: SizedBox()),
-            DiceDot(),
+            dot,
             Expanded(child: SizedBox()),
-            DiceDot(),
+            dot,
             Expanded(child: SizedBox()),
           ],
         ),
@@ -178,23 +187,24 @@ class DiceFace extends StatelessWidget {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget get dot {
     return Container(
-      color: Colors.white,
-      alignment: Alignment.center,
-      child: _getFace(),
+      decoration: BoxDecoration(
+        color: dotColor ?? Colors.grey,
+        shape: BoxShape.circle,
+      ),
+      height: size / 6,
+      width: size / 6,
     );
   }
-}
 
-class DiceDot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: Colors.black, shape: BoxShape.circle),
-      height: 100,
-      width: 100,
+      color: faceDecoration == null ? Colors.white : null,
+      decoration: faceDecoration,
+      alignment: Alignment.center,
+      child: _getFace(),
     );
   }
 }
