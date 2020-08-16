@@ -37,7 +37,6 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           Container(
             child: LudoDice(
-              size: 200,
               roll: roll,
               dotColor: Colors.orange,
               shouldAnimateInitially: false,
