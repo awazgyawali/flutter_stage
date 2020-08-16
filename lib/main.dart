@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'ludo.dart';
 
@@ -23,8 +25,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  GlobalKey<LudoDiceState> _diceKey = GlobalKey();
-
+  int roll = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,106 +37,28 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           Container(
             child: LudoDice(
-              key: _diceKey,
               size: 200,
+              roll: roll,
               dotColor: Colors.orange,
+              shouldAnimateInitially: false,
               duration: Duration(milliseconds: 2000),
             ),
           ),
-          Row(
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    _diceKey.currentState.rollDiceTo(1);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(15),
-                    margin: EdgeInsets.all(5),
-                    alignment: Alignment.center,
-                    color: Colors.yellow,
-                    child: Text("1"),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    _diceKey.currentState.rollDiceTo(2);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(15),
-                    margin: EdgeInsets.all(5),
-                    alignment: Alignment.center,
-                    color: Colors.yellow,
-                    child: Text("2"),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    _diceKey.currentState.rollDiceTo(3);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(15),
-                    margin: EdgeInsets.all(5),
-                    alignment: Alignment.center,
-                    color: Colors.yellow,
-                    child: Text("3"),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    _diceKey.currentState.rollDiceTo(4);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(15),
-                    margin: EdgeInsets.all(5),
-                    alignment: Alignment.center,
-                    color: Colors.yellow,
-                    child: Text("4"),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    _diceKey.currentState.rollDiceTo(5);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(15),
-                    margin: EdgeInsets.all(5),
-                    alignment: Alignment.center,
-                    color: Colors.yellow,
-                    child: Text("5"),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    _diceKey.currentState.rollDiceTo(6);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(15),
-                    margin: EdgeInsets.all(5),
-                    alignment: Alignment.center,
-                    color: Colors.yellow,
-                    child: Text("6"),
-                  ),
-                ),
-              ),
-            ],
-          )
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              setState(() {
+                roll = Random().nextInt(5) + 1;
+              });
+            },
+            child: Container(
+              padding: EdgeInsets.all(15),
+              margin: EdgeInsets.all(5),
+              alignment: Alignment.center,
+              color: Colors.yellow,
+              child: Text("Roll the dice!!!"),
+            ),
+          ),
         ],
       ),
     );

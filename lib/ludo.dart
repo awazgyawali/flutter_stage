@@ -1,29 +1,29 @@
 import 'dart:ui';
 
-import 'package:example/animations.dart';
-import 'package:example/helpers.dart';
-
 import 'dice_face.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stage/flutter_stage.dart';
 
 class LudoDice extends StatefulWidget {
-  final Duration duration;
-  final int initialRoll;
-  final Color dotColor;
+  final int roll;
   final Curve curve;
   final double size;
+  final Color dotColor;
+  final Duration duration;
+  final bool shouldAnimateInitially;
   final BoxDecoration faceDecoration;
 
   const LudoDice({
-    /// [key] is required to get function that will animate the changes
-    @required Key key,
+    Key key,
+
+    /// The rface of the dice that should be rolled to
+    @required this.roll,
 
     /// The duration of each roll
     @required this.duration,
 
-    /// The face of the dice for the first render. Default is 1
-    this.initialRoll = 1,
+    /// Send [true] if you want to roll the dice for the first time. Default is [false]
+    this.shouldAnimateInitially = false,
 
     /// Decoration for the faces of the dice, if nothing is provided then plain white background will be used.
     this.faceDecoration,
@@ -38,24 +38,26 @@ class LudoDice extends StatefulWidget {
     this.size = 300,
   }) : super(key: key);
   @override
-  LudoDiceState createState() => LudoDiceState();
+  _LudoDiceState createState() => _LudoDiceState();
 }
 
-class LudoDiceState extends State<LudoDice>
+class _LudoDiceState extends State<LudoDice>
     with SingleTickerProviderStateMixin {
   AnimationController _animationController;
   Animation _curvedAnimation;
+  AnimationStatus _animationStatus;
 
   Vector3 _target, _currentRotation, _lastRotation, _stop;
 
-  int currentRoll;
+  int _currentRoll;
 
   @override
   void initState() {
     super.initState();
-    currentRoll = 1;
-    _currentRotation = evenRoles[currentRoll];
+    _currentRoll = 1;
+    _currentRotation = _evenRoles[_currentRoll];
     _lastRotation = Vector3.copy(_currentRotation);
+    _animationStatus = AnimationStatus.completed;
     _animationController = AnimationController(
       vsync: this,
       lowerBound: 0.0,
@@ -71,19 +73,19 @@ class LudoDiceState extends State<LudoDice>
         double value = _curvedAnimation.value;
         setState(() {
           _currentRotation = Vector3(
-            lerpDoubleWithStops(
+            _lerpDoubleWithStops(
               _lastRotation.x,
               _target.x,
               value,
               stop: _stop.x,
             ),
-            lerpDoubleWithStops(
+            _lerpDoubleWithStops(
               _lastRotation.y,
               _target.y,
               value,
               stop: _stop.y,
             ),
-            lerpDoubleWithStops(
+            _lerpDoubleWithStops(
               _lastRotation.z,
               _target.z,
               value,
@@ -94,19 +96,27 @@ class LudoDiceState extends State<LudoDice>
       })
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed)
-          _lastRotation = Vector3.copy(evenRoles[currentRoll]);
+          _lastRotation = Vector3.copy(_evenRoles[_currentRoll]);
+        _animationStatus = status;
       });
+
+    if (widget.shouldAnimateInitially) _startAnimation(widget.roll);
   }
 
   _startAnimation(int roll) async {
-    currentRoll = roll;
-    _stop = oddRoles[roll];
-    _target = evenRoles[roll];
+    _currentRoll = roll;
+    _stop = _oddRoles[roll];
+    _target = _evenRoles[roll];
     _animationController.forward(from: 0);
   }
 
-  rollDiceTo(int roll) {
-    _startAnimation(roll);
+  @override
+  void didUpdateWidget(LudoDice oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_animationStatus != AnimationStatus.completed)
+      print("Dice is already animating!!!");
+    else
+      _startAnimation(widget.roll);
   }
 
   @override
@@ -203,3 +213,38 @@ class LudoDiceState extends State<LudoDice>
     );
   }
 }
+
+/// This is an helper function to interpolate [start] and [end] value with a [stop] valuee
+double _lerpDoubleWithStops(
+  double start,
+  double end,
+  double value, {
+  double stop,
+}) {
+  if (stop == null) return lerpDouble(start, end, value);
+  if (value < 0.5)
+    return lerpDouble(start, stop, value * 2);
+  else if (value > .5) return lerpDouble(stop, end, (value - .5) * 2);
+  return stop;
+}
+
+List<Vector3> get _oddRoles => [
+      null,
+      Vector3(-360, -720, -360),
+      Vector3(-360, -810, -360),
+      Vector3(-360, -900, -360),
+      Vector3(-360, -630, -360),
+      Vector3(-450, -720, -360),
+      Vector3(-270, -720, -360),
+    ];
+
+List<Vector3> get _evenRoles => [
+      null,
+      Vector3(360, 720, 360),
+      Vector3(360, 630, 360),
+      Vector3(360, 900, 360),
+      Vector3(360, 810, 360),
+      Vector3(270, 720, 360),
+      Vector3(450, 720, 360),
+      Vector3(360, 810, 360),
+    ];
